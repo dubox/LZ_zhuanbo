@@ -1,0 +1,666 @@
+//心跳消息
+message Idle{
+	optional string stridle=1[default=""]; 
+}
+
+//统一的返回消息
+message Ack{
+	required bool Result=1;
+	optional string Error=2[default = "unknown"];	//Result=false时，这里填错误描述
+	optional int32 Code=3[default = -1];		//大多数情况下不需要用到错误码
+}
+
+//登陆
+message ReqUserLogin{
+	required string UserName=1;
+	required string Password=2;	//密码
+	required string Version=3;	//客户端版本
+	required string UserIP=4;	// 用户IP
+	optional int32 MachineType=5[default=0];	//0:pc,1:android,2:ios,3:h5
+	optional string FrontGuid=6;	// 前端唯一GUID
+	optional string UserGuid=7;	// 用户唯一GUID
+	required int32 Gameid=8;	// 游戏ID
+	optional string Ticket=9;	//ticket
+}
+
+//登陆返回
+message AckUserLogin {
+	required Ack AckLogin = 1;	// 返回
+	optional string UserName = 2;   // 用户名
+	optional string NickName = 3;   // 昵称
+	optional int32 Sex = 4;    	// 性别
+	repeated string Permission = 5; // 权限
+	optional int32 CCU = 6;		// 转播CCU
+	required int32 Gameid = 7;	// 游戏ID
+}
+
+//登出
+message ReqUserExit{
+	optional string FrontGuid=1;	// 前端唯一GUID
+	optional string UserGuid=2;	// 用户唯一GUID
+	//optional int32 BroadCastID = 2; // 所在转播ID
+}
+
+//注册
+message ReqRegister{
+	required string UserName=1;			// 申请注册的ID
+	required string Password=2;			// 密码
+	required int32 Male=3;				// 性别
+	required string Email=4;			// 邮箱
+	required string UserIP=5;			// 用户IP
+}
+
+// 前端通知转播用户断线
+message UserBreak {
+	required string UserGuid=1;	// 断线用户GUID
+}
+
+// 前端注册 注册到 后端服务
+message OGReqRegisterService
+{
+    required string Guid = 1; // 前端唯一 GUID
+    optional int32 ServerPort = 2; // 前端服务端口号，用以区分同IP服务
+}
+
+// 前端重启
+message OGReqRebootService
+{
+    required string Guid = 1; // 前端唯一 GUID
+}
+
+// 前端重启 回应
+message OGAckRebootService
+{
+    required Ack AckReboot = 1;	// 返回
+}
+
+// 后端服务 回应 前端服务
+message OGAckRegisterService
+{
+    required string Guid = 1; // 前端唯一 GUID
+}
+
+// 认证服务 通知 前端服务 踢人
+message OGKickFrontPlayer
+{
+    required string UserGuid = 1; // 用户唯一GUID
+}
+
+// 认证服务 通知 前端服务 CCU
+message OGCCUBroadCast
+{
+    required int32 CCU = 1; // 当前在线用户数
+}
+
+//上传棋谱数据	#
+message UploadChessManual
+{
+	required int32 PlayID = 1; // 局ID
+	required int32 BroadCastID = 2; // 转播ID
+	required string ChessManualInfo = 3; // 棋谱数据（XML）
+	optional string Guid = 4[default = ""]; // 
+}
+
+//下发棋谱数据	#
+message ChessManualInfo
+{
+	required int32 PlayID = 1; // 局ID
+	required int32 BroadCastID = 2; // 转播ID
+	required string ChessManualInfo = 3; // 棋谱数据（XML）
+	optional string Guid = 4[default = ""]; // 
+}
+
+
+//添加对阵选手名
+//添加对阵选手名	#
+message AddName
+{
+	required int32 PlayID = 1; // 局ID
+	required int32 BroadCastID = 2; // 转播ID
+	required string PlayerName1 = 3; // 名称1（默认先手）
+	required string PlayerName2 = 4; // 名称2
+	optional string Guid = 5[default = ""]; // 
+}
+
+//开始转播	#
+message StartBroadCast
+{
+	required int32 BroadCastID = 1; // 转播ID
+	optional string Guid = 2[default = ""]; // 
+}
+
+
+//结束转播	#
+message EndBroadCast
+{
+	required int32 BroadCastID = 1; // 转播ID
+	optional string Guid = 2[default = ""]; // 
+}
+
+//开始一局	#
+message StartGame
+{
+	required int32 BroadCastID = 1; // 转播ID
+	required int32 Count = 2; // 局数
+	required int32 FristColor = 3; // 先手棋子颜色：0红（黑），1黑（白）
+	optional string PlayerName1 = 4[default = ""]; // 名称1（默认先手）
+	optional string PlayerName2 = 5[default = ""]; // 名称2
+	optional string Guid = 6[default = ""]; // 
+} 
+
+
+//修改一局信息	#
+message SetGameInfo
+{
+	required int32 PlayID = 1; // 局ID
+	required int32 BroadCastID = 2; // 转播ID
+	required string PlayerName1 = 3; // 选手1 红（黑）
+	required string PlayerName2 = 4; // 选手2 黑（白）
+	required int32 FristColor = 5; // 先手棋子颜色：0红（黑），1黑（白）
+	optional string Guid = 6[default = ""]; // 
+}
+
+
+//上传一局结果消息	#
+//修改一局结果消息
+message SetResult
+{
+	required int32 PlayID = 1; // 局ID
+	required int32 BroadCastID =2; // 转播ID
+	required string Result = 3; // 一局结果（得分，原因）
+	optional string Guid = 4[default = ""]; // 转播员ID 
+}
+
+
+//录入转播结果		#
+message SetBroadCastResult
+{
+	required int32 BroadCastID = 1; // 转播ID
+	required string BroadCastResult = 2; // 结果信息
+	optional string Guid = 3[default = ""]; // 
+}
+
+
+//转播员行棋消息	#
+message MovePieces
+{
+	required int32 PlayID = 1; // 局ID
+	required int32 BroadCastID =2; // 转播ID
+	required bytes MovePiecesInfo = 3; // 行棋信息（走棋数据或棋盘数据XML结构）
+	required int32 Flag = 4; // 每步的标识信息（每步编号）
+	optional string Guid = 5[default = ""]; // 
+}
+
+
+//转播员撤销消息	#
+message RescindInfo
+{
+	required int32 PlayID = 1; // 局ID
+	required int32 BroadCastID =2; // 转播ID
+	required int32 Flag = 3; // 每步的标识信息（每步编号）
+	optional string Guid = 4[default = ""]; // 
+}
+
+
+//解说员点开始研究	#
+message CommentatorStart
+{
+	required int32 BroadCastID =1; // 转播ID
+	optional string Commentator = 2; // 解说员
+	optional string Guid = 3[default = ""]; // 
+}
+
+
+//解说员点结束研究	#
+message CommentatorEnd
+{
+	required int32 BroadCastID =1; // 转播ID
+	optional string Commentator = 2; // 解说员
+	optional string Guid = 3[default = ""]; // 
+}
+
+//解说员行棋消息	#
+message CommentatorMovePieces
+{
+	required int32 BroadCastID =1; // 转播ID
+	required bytes MovePiecesInfo = 2; // 行棋信息（走棋数据或棋盘数据XML结构）
+	required int32 Flag = 3; // 每步的标识信息（每步编号）
+	optional string Commentator = 4; // 解说员
+	optional string Guid = 5[default = ""]; // 
+}
+
+
+//转播数据
+message HistroyBroadcastData
+{
+	required Ack result=1;	// 返回结果
+	required int32 BroadCastID = 2; // 转播ID
+	required int32 Type = 3; // 0、新添加; 1、更新旧数据; 
+	repeated PlayedInfo HistoryData = 4; // 历史数据（XML结构）
+}
+
+
+//请求解说历史数据
+message ReqHistroyCommentatorData
+{
+	required int32 BroadCastID = 1; // 转播ID
+	required int32 CommentateID = 2; // 解说ID
+	optional string Guid = 3[default = ""];// 
+}
+
+//解说历史数据
+message HistroyCommentatorData
+{
+	required Ack result=1;	// 返回结果
+	required int32 BroadCastID = 2; // 转播ID
+	required int32 CommentateID = 3; // 解说ID
+	repeated CommentatorMovePieces HistoryData = 4; // 历史数据
+}
+
+// 解说员行棋列表（用于入库缓存）
+message CMPList
+{
+	repeated CommentatorMovePieces HistoryData = 1;
+}
+
+message PlayedInfo
+{
+	required int32 PlayID = 1; // 每局ID
+	required int32 BroadCastID = 2; // 转播ID
+	required string PlayerName1 = 3; // 选手1 
+	required string PlayerName2 = 4; // 选手2 
+	required int32 FristColor = 5; // 谁是先手
+	required int32 Count = 6; // 局数
+	repeated MovePieces RecordedInfo = 7; // 行棋过程
+	required string PlayInfoResult = 8; // 结果信息
+	required int32 PlayInfoStatus = 9; // 当局状态0正在进行， 1已经结束， 2删除
+}
+
+// 行棋列表（用于入库缓存）
+message MPList
+{
+	repeated MovePieces RecordedInfo = 1;
+}
+
+//棋盘数据（初始化棋盘，解说员研究，解说员结束研究时发送）
+//<playInfo>
+//<time></time> 时间 可为null
+//<boardRole></boardRole> 棋盘角色 0转播棋盘，1解说棋盘
+//<chessType></chessType> 类型 0棋盘信息，1走棋信息
+//<stepIndex></stepIndex> 转播的第几步走棋
+//<boardInfo>
+// <currentColor></currentColor> 先手棋子颜色 0红(黑)，1黑(白)
+// <pieces> 当前棋盘上的棋子
+// <piece>
+//  <color></color>
+//  <type></type>
+//  <col></col>
+//  <row></row>
+// </piece>
+// ...
+// </pieces>
+//</boardInfo>
+//</playInfo>
+
+
+
+//走棋数据（转播员或解说员走棋或撤销时发送）
+//<playInfo>
+//<time></time> 时间 可为null
+//<boardRole></boardRole> 棋盘角色 0转播棋盘，1解说棋盘
+//<chessType></chessType> 类型 0棋盘信息，1走棋信息
+//<stepType></stepType> 走棋类型 0:走棋 1:撤销
+//<stepIndex></stepIndex> 转播的第几步走棋
+//<stepInfo>
+// <piece> 所走棋子 
+//  <color></color>
+//  <type></type>
+//  <col></col>
+//  <row></row>
+// </piece>
+//<toCol></toCol> 目标列
+//<toRow></toRow> 目标行
+// <toPiece> 被吃棋子 可为null
+//  <color></color>
+//  <type></type>
+//  <col></col>
+//  <row></row>
+// </toPiece>
+//</stepInfo>
+//</playInfo>
+
+
+//创建转播	#
+message CreateBroadCast
+{
+         required int32 MatchID = 1; // 赛事ID (未归类，填-1)
+         required string BroadCastName = 2; // 转播名称
+         required int32 IsGroup = 3; // 是否团体赛
+         required string BeginDate = 4; // 开始时间 'YYYY-MM-DD HH:MM:SS'格式
+         required string Team1 = 5; // 队伍1或者选手1
+         required string Team2 = 6; // 队伍2或者选手2 
+         required string Expostor = 7; // 解说员
+	 required int32 GameID = 8; // 游戏ID
+         optional string Guid = 9[default = ""]; // 
+}
+
+//删除转播	#
+message DropBroadCast
+{
+	required int32 BroadCastID = 1; // 转播ID	
+	optional string Guid = 2[default = ""]; // 
+}
+
+//删除转播(用于转播服务通知前端服务)
+message DropBroadCast2
+{
+	required int32 BroadCastID = 1; // 转播ID
+	required int32 GameID = 2; // 游戏ID	
+	optional string Guid = 3[default = ""]; // 
+}
+
+//编辑转播信息	#
+message EditBroadCast
+{
+	required int32 BroadCastID = 1; // 转播ID
+	required int32 MatchID = 2; // 赛事ID (未归类，填-1)
+	required string BroadCastName = 3; // 转播名称
+	required int32 IsGroup = 4; // 是否团体赛
+	required string BeginDate = 5; // 开始时间 'YYYY-MM-DD HH:MM:SS'格式
+	required string Team1 = 6; // 队伍1或者选手1
+	required string Team2 = 7; // 队伍2或者选手2
+	required string Expostor = 8; // 解说员
+	optional string Guid = 9[default = ""]; // 
+}
+
+//赛事基础信息  @
+message MatchInfo
+{
+	required int32 MatchID  = 1; // 赛事ID
+	required string MatchName = 2; // 赛事名称
+	required string BeginDate = 3; // 开始时间
+	required string EndDate = 4; // 结束时间
+	required int32 MatchLevel = 5; // 赛事级别
+	required int32 MatchSystem = 6; // 赛制
+	required string MatchDetails = 7; // 赛事详情
+	required int32 MatchInfoStatus = 8; // 赛事状态：0、删除；1、预告；2、正在进行；3、结束
+	required int32 GameID = 9; // 游戏ID
+}
+
+//转播基础信息   @
+message BroadCastInfo
+{
+	required int32 BroadCastID = 1; // 转播ID
+	required int32 MatchID  = 2; // 赛事ID
+	required string BroadCastName = 3; // 转播名称
+	required string BroadCastDetails = 4; // 转播详情
+	required int32 BCSystem = 5; // 是否团体赛
+	required string Team1 = 6; // 队伍1或者选手1
+	required string Team2 = 7; // 队伍2或者选手2
+	required string BeginDate = 8; // 开始时间
+	required string EndDate = 9; // 结束时间
+	required string BroadCastResult = 10; // 结果信息
+	required int32 BroadCastStatus = 11; // 转播状态：0、删除；1、预告；2、正在进行；3、结束
+	required int32 GameID = 12; // 游戏ID
+	optional string Creator = 13[default = ""]; // 创建转播员
+}
+
+//下发玩家信息	@
+message UserInfo
+{
+	required Ack result=1;	// 返回结果
+	required string nikename=2;	// 用户昵称
+	required string username=3;	// 用户ID
+	required int32 sex=4;		// 性别：0女，1男，2未指定
+	repeated string privilege=5;	// 用户权限组	
+}
+
+//下发火热推荐信息	@
+//下发转播列表信息
+///解析转播列表
+message BroadCastList
+{
+	required Ack result=1;	// 返回结果
+	required int32 Type = 2; // 0、新添加; 1、更新旧数据; 
+	repeated BroadCastInfo ListInfo = 3;  // 转播列表信息
+}
+
+//给前端更新缓存用
+message BroadCastList2
+{
+	required Ack result=1;	// 返回结果
+	required int32 Type = 2; // 0、新添加; 1、更新旧数据; 
+	repeated BroadCastInfo ListInfo = 3;  // 转播列表信息
+	required int32 GameID = 4; // 游戏ID
+}
+
+//更新日期标签下的转播列表
+message BroadCastListByDate
+{
+	required Ack result=1;	// 返回结果
+	required int32 Type = 2; // 0、新添加; 1、更新旧数据; 
+	repeated BroadCastInfo ListInfo = 3;  // 转播列表信息
+	required string Date = 4; // 日期
+	required int32 GameID = 5; // 游戏ID
+}
+
+//下发赛事信息	@
+message MatchInfoList
+{
+	required Ack result=1;	// 返回结果
+	required int32 Type = 2; // 0、新添加; 1、更新旧数据; 
+	repeated MatchInfo ListInfo = 3;  // 赛事列表信息
+}
+
+//给前端更新缓存用
+message MatchInfoList2
+{
+	required Ack result=1;	// 返回结果
+	required int32 Type = 2; // 0、新添加; 1、更新旧数据; 
+	repeated MatchInfo ListInfo = 3;  // 赛事列表信息
+	required int32 GameID = 4; // 游戏ID
+}
+
+//进入转播	@
+message EnterBroadCast
+{	
+	required int32 BroadCastID = 1; // 转播ID 
+	required int32 GameID = 2; // 游戏ID
+	optional string Guid = 3[default = ""]; // 
+}
+
+//退出转播	@
+message LeaveBroadCast
+{
+	required int32 BroadCastID = 1; // 转播ID 
+	required int32 GameID = 2; // 游戏ID
+	optional string Guid = 3[default = ""]; // 
+}
+
+//发送聊天消息	@
+//下发聊天消息
+message UserChat
+{
+	required string UserName = 1; // 用户名
+	required string NickName = 2; // 昵称
+	required int32 BroadCastID = 3;	//转播ID（或者频道ID）
+	required string Message = 4; // 聊天内容
+}
+
+
+//搜索消息		@
+//下发搜索列表结果(转播)
+// 搜索历史转播
+message SearchBroadCasts
+{
+	required string Date1 = 1; // 起始时间
+	required string Date2 = 2; // 终止时间
+	required string MatchName = 3; // 赛事名
+	required string PlayerName = 4; // 选手名
+	optional int32  Count = 5[default = 0]; // 最后结束的转播的数据。不为零就取Count个最后结束转播ID，为0则才查询别的条件
+	required int32 GameID = 6; // 游戏ID	
+	optional string Guid = 7[default = ""]; // 操作人
+}
+
+// 按赛事ID搜索转播ID列表
+message SearchBroadCastByMatchID
+{
+	repeated int32 MatchIDList = 1; // 赛事ID列表
+	required int32 GameID = 2; // 游戏ID	
+	optional string Guid = 3[default = ""]; // 操作人
+}
+
+// @
+message SearchResult
+{
+	required Ack result=1;	// 返回结果
+	repeated int32 BroadCastIDList = 2; // 满足搜索条件的转播ID列表
+	required int32 GameID = 3; // 游戏ID	
+}
+
+// 	@
+message ReqSearchResultInfo
+{
+	repeated int32 BroadCastIDList = 1; // 请求的转播ID列表
+	optional string Guid = 2[default = ""]; // 操作人
+}//返回使用BroadCastList
+
+//返回日期列表
+message AckDateList
+{
+	required Ack result=1; // 返回结果
+	required int32 Type = 2; // 0、新添加; 1、更新旧数据; 
+	repeated string Date = 3; //日期列表
+	required int32 GameID = 4; // 游戏ID	
+} 
+
+
+//请求转播列表
+message ReqBroadCastList
+{
+	required string Date = 1; //日期
+	required int32 GameID = 2; // 游戏ID
+} 
+
+//统一的请求消息
+message ReqMsg
+{
+	required int32 GameID = 1; // 游戏ID
+	optional string guid=2[default = ""]; // guid
+}
+
+// 转播人气值信息
+message PopularityInfo
+{
+	required int32 BroadCastID = 1; // 转播ID 
+	required int32 Popularity = 2; // 转播ID对应的最新人气值
+}
+
+// 请求人气值信息
+message ReqPopularityInfo
+{
+	repeated int32 BroadCastIDList = 1; // 请求的转播的人气值的转播ID
+	required int32 GameID = 2; // 游戏ID
+	optional string Guid = 3[default = ""]; // 操作人
+}
+
+// 应答人气值信息
+message AckPopularityInfo
+{
+	required Ack result=1; // 返回结果
+	repeated PopularityInfo PopularityList = 2; // 应答的转播的人气值列表
+	required int32 GameID = 3; // 游戏ID
+}
+
+// 通知通道创建/销毁的消息
+message ChangeChannel
+{
+	required string ChannelName = 1; // 通道名
+	required string FrontGuid = 2; // 前端的GUID
+}
+
+// 用户发送聊天信息
+message ReqUserChatInfo
+{
+	required string Username = 1; // 用户名
+	required int32 ChannelID = 2; // 频道ID（转播ID）
+	required bytes Message = 3; // 聊天内容
+	required int32 GameID = 4; // 游戏ID
+	optional string Guid = 5[default = ""]; // 操作人
+}
+
+// 转播内广播聊天信息
+message ChatInfo
+{
+	required int32 Type = 1; // 消息类型：0系统消息，1转播员消息，2解说员消息，3普通用户消息
+	required int32 ChannelID = 2; // 频道ID（转播ID）
+	required bytes Message = 3; // 聊天内容
+	required int32 GameID = 4; // 游戏ID
+	optional string Username = 5[default = ""]; // 用户名，Type为3时用户的ID
+}
+
+// 聊天信息列表（用于入库缓存）
+message ChatInfoList
+{
+	repeated ChatInfo Content = 1;	// 消息列表
+}
+
+// 转播内转播员或者解说员发布系统公告
+message ReqSystemChatInfo
+{
+	required int32 ChannelID = 1; // 频道ID（转播ID）
+	required bytes Content = 2; // 系统消息内容
+	required int32 GameID = 3; // 游戏ID
+	optional string Guid = 4[default = ""]; // 操作人	
+}
+
+// 请求转播系统消息
+message ReqBroadcastChatInfo
+{
+	required int32 ChannelID = 1; // 频道ID（转播ID）
+}
+
+// 转播内系统消息列表
+message SystemChatInfoList
+{
+	required Ack Result = 1; // 返回结果
+	required int32 ChannelID = 2; // 频道ID（转播ID）
+	repeated ChatInfo Content = 3;	// 系统消息列表
+}
+
+// 导播控制效果
+message DirectorControl
+{
+	required int32 Type = 1; // 操作类型
+	required int32 BroadCastID = 2; // 转播ID
+	optional string Guid = 3[default = ""]; // 操作人
+}
+
+// 后台修改转播信息
+message UpdateBroadcastInfo
+{
+	required int32 BroadCastID = 1; // 转播ID
+}
+
+// 走马灯消息
+message MarqueesInfo
+{
+	required string Msg = 1; // 走马灯消息
+	required int32 GameID = 2; // 游戏ID
+}
+
+// 用户操作打点消息
+message UserAction
+{
+	required string UserName = 1; // 用户名
+	required int32 Type = 2; // 打点类型
+	required int32 GameID = 3; // 游戏ID
+}
+
+// 导播控制效果
+message VideoControl
+{
+	required int32 BroadCastID = 1; // 转播ID
+	required string VideoName = 2; // 视频名称
+	optional string Guid = 3[default = ""]; // 操作人
+}
