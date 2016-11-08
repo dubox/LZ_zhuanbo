@@ -1,4 +1,4 @@
-Õâ±¾À´ÊÇÒ»¸ö¹úÏó×ª²¥µÄÏîÄ¿ºóÀ´Ø²ÕÛÁË
+è¿™æœ¬æ¥æ˜¯è”ä¼—ä¸€ä¸ªå›½è±¡è½¬æ’­çš„é¡¹ç›®åŽæ¥å¤­æŠ˜äº†
 
-ÀïÃæº­¸ÇÁË:
-socket , protobuf½âÎö , zlib½âÑ¹Ëõ , xml½âÎö ÒÔ¼°¶þ½øÖÆÊý¾ÝÏà¹Ø
+é‡Œé¢æ¶µç›–äº†:
+socket , protobufè§£æž , zlibè§£åŽ‹ç¼© , xmlè§£æž ä»¥åŠäºŒè¿›åˆ¶æ•°æ®ç›¸å…³
